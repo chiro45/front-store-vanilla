@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Food Store</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>🍕 Food Store</h1>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Ingresar</button>
+            </form>
+            <p class="text-center mt-1">
+                ¿No tienes cuenta? <a href="/src/pages/auth/resgister/resgister.html">Regístrate</a>
+            </p>
+            <div class="mt-1">
+                <p style="font-size: 0.9rem; color: #636e72;">Cuentas de prueba:</p>
+                <p style="font-size: 0.85rem;">Admin: admin@food.com / admin123</p>
+                <p style="font-size: 0.85rem;">Cliente: cliente@food.com / cliente123</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./login.ts"></script>
+</body>
+
+</html>

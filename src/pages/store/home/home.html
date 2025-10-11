@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="home.html" class="nav-brand">🍕 Food Store</a>
+            <ul class="nav-links">
+                <li><a href="home.html">Inicio</a></li>
+                <li id="adminLink" style="display: none;"><a
+                        href="/src/pages/admin/adminHome/adminHome.html">Administración</a></li>
+                <li><span id="userName"></span></li>
+                <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-2">Nuestras Categorías</h1>
+        <div id="categoriesGrid" class="grid"></div>
+
+        <h1 class="mb-2 mt-1">Productos Destacados</h1>
+        <div id="productsGrid" class="grid"></div>
+    </div>
+    <script type="module" src="./home.ts"></script>
+</body>
+
+</html>

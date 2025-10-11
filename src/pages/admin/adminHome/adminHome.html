@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Food Store</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
+            <ul class="nav-links">
+                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
+                <li><a href="./adminHome.html">Administración</a></li>
+                <li><span id="userName"></span></li>
+                <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-2">Panel de Administración</h1>
+
+        <div class="grid">
+            <div class="card">
+                <h2>📁 Categorías</h2>
+                <p>Gestiona las categorías de productos</p>
+                <a href="/src/pages/admin/categories/categories.html" class="btn btn-primary">Ir a Categorías</a>
+            </div>
+
+            <div class="card">
+                <h2>🍔 Productos</h2>
+                <p>Gestiona el catálogo de productos</p>
+                <a href="/src/pages/admin/products/products.html" class="btn btn-primary">Ir a Productos</a>
+            </div>
+
+            <div class="card">
+                <h2>📊 Estadísticas</h2>
+                <p id="stats">Cargando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./adminHome.ts">
+
+    </script>
+</body>
+
+</html>
