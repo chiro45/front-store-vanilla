@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - Food Store</title>
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="home.html" class="nav-brand">🍕 Food Store</a>
+            <ul class="nav-links">
+                <li><a href="home.html">Inicio</a></li>
+                <li><a href="my-orders.html">Mis Pedidos</a></li>
+                <li id="adminLink" style="display: none;"><a href="admin.html">Administración</a></li>
+                <li class="cart-badge">
+                    <a href="cart.html">🛒 Carrito</a>
+                    <span class="badge-count" id="cartCount">0</span>
+                </li>
+                <li><span id="userName"></span></li>
+                <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-2">Mis Pedidos</h1>
+
+        <div id="ordersContainer" class="my-orders-container"></div>
+
+        <div id="emptyOrders" class="empty-state">
+            <h2>No tienes pedidos aún</h2>
+            <p>Realiza tu primer pedido y aparecerá aquí</p>
+            <a href="home.html" class="btn btn-primary">Ver Productos</a>
+        </div>
+    </div>
+
+    <!-- Modal de Detalle de Pedido -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalle del Pedido #<span id="orderId"></span></h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div id="orderDetail"></div>
+        </div>
+    </div>
+
+    <script type="module" src="./orders.ts"></script>
+</body>
+
+</html>

@@ -1,8 +1,10 @@
+import type { ICart } from "../types/ICart";
 import type {
   ICategory,
   ICreateCategory,
   IUpdateCategory,
 } from "../types/ICategoria";
+import type { IOrder } from "../types/IOrders";
 import type {
   ICreateProduct,
   IProduct,
@@ -19,7 +21,7 @@ export const loginUser = async (
     name: "Juan Pérez",
     email: "juan.perez@example.com",
     id: 1,
-    role: "admin",
+    // role: "admin",
   };
 };
 
@@ -167,7 +169,65 @@ export const updateProduct = async (
     imagen: "",
   };
 };
-
+export const createOrder = async (orderData: any): Promise<void> => {
+  console.log(orderData);
+};
+export const clearCart = async (): Promise<void> => {};
 export const deleteProduct = async (id: number): Promise<void> => {
   console.log(id);
+};
+
+export const updateQuantity = (itemId: string, newQuantity: any) => {
+  console.log(itemId, newQuantity);
+};
+
+export const removeFromCart = (itemId: string) => {
+  console.log(itemId);
+};
+
+export const addToCart = (product: IProduct) => {
+  console.log(product);
+};
+export const getCart = (): ICart => {
+  return {
+    items: [
+      {
+        id: 1,
+        nombre: "Auriculares Bluetooth",
+        descripcion: "Auriculares inalámbricos con cancelación de ruido",
+        precio: 25000,
+        stock: 10,
+        categoriaId: 3,
+        activo: true,
+        imagen: "auriculares.jpg",
+        cantidad: 2,
+      },
+      {
+        id: 2,
+        nombre: "Mouse Gamer",
+        descripcion: "Mouse RGB de alta precisión",
+        precio: 15000,
+        stock: 8,
+        categoriaId: 3,
+        activo: true,
+        imagen: "mouse.jpg",
+        cantidad: 1,
+      },
+    ],
+    total: 65000,
+  };
+};
+export const getCartItemCount = () => {
+  return [];
+};
+
+export const getOrders = async (): Promise<IOrder[]> => {
+  return [];
+};
+
+export const updateOrderStatus = async (
+  currentOrderId: string,
+  newStatus: string
+): Promise<void> => {
+  console.log(currentOrderId, newStatus);
 };
