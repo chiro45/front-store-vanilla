@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Food Store - Inicio</title>
     <link rel="stylesheet" href="/src/style.css">
 </head>
 
@@ -14,30 +14,79 @@
             <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
             <ul class="nav-links">
                 <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
-                <li id="adminLink" style="display: none;"><a
-                        href="/src/pages/admin/adminHome/adminHome.html">Administración</a></li>
-                <li id="cartLink"><a href="/src/pages/store/cart/cart.html">🛒 Carrito</a></li>
+                <li><a href="/src/pages/client/orders/orders.html">Mis Pedidos</a></li>
+                <li id="adminLink" style="display: none;">
+                    <a href="/src/pages/admin/adminHome/adminHome.html">Administración</a>
+                </li>
+                <li class="cart-badge">
+                    <a href="/src/pages/store/cart/cart.html">🛒 Carrito</a>
+                    <span class="badge-count" id="cartCount">0</span>
+                </li>
                 <li><span id="userName"></span></li>
                 <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
             </ul>
         </div>
     </nav>
 
-    <div class="main-container">
-        <aside id="categoriesSidebar" class="sidebar">
-            <h2>Categorías</h2>
-            <div id="categoriesGrid"></div>
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Categorías</h3>
+                <p style="font-size: 0.9rem; color: #636e72;">Filtra por categoría</p>
+            </div>
+            <ul class="sidebar-menu" id="categoryMenu">
+                <li>
+                    <a href="#" data-category="all" class="category-link active">
+                        <span class="icon">📦</span>
+                        <span>Todos los productos</span>
+                    </a>
+                </li>
+            </ul>
         </aside>
 
-        <main class="products-container">
-            <h1>Productos Destacados</h1>
-            <div id="productsGrid" class="grid"></div>
+        <!-- Botón toggle para mobile -->
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+        <!-- Contenido principal -->
+        <main class="main-content" id="mainContent">
+            <div class="container">
+                <!-- Filtros y búsqueda -->
+                <div class="filter-section">
+                    <div class="filter-controls">
+                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar productos...">
+                        <select id="sortSelect">
+                            <option value="">Ordenar por</option>
+                            <option value="name-asc">Nombre A-Z</option>
+                            <option value="name-desc">Nombre Z-A</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                        </select>
+                        <select id="availabilityFilter">
+                            <option value="all">Todos</option>
+                            <option value="available">Disponibles</option>
+                            <option value="unavailable">No disponibles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Productos -->
+                <div class="page-header">
+                    <h1 id="sectionTitle">Todos los Productos</h1>
+                    <span id="productCount" style="color: #636e72;">0 productos</span>
+                </div>
+
+                <div id="productsGrid" class="grid"></div>
+
+                <div id="noProducts" style="display: none;" class="empty-state">
+                    <h2>No se encontraron productos</h2>
+                    <p>Intenta con otra búsqueda o filtro</p>
+                </div>
+            </div>
         </main>
     </div>
 
     <script type="module" src="./home.ts"></script>
 </body>
-
-<script type="module" src="./home.ts"></script>
 
 </html>

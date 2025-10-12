@@ -5,19 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Pedidos - Food Store</title>
-    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="home.html" class="nav-brand">🍕 Food Store</a>
+            <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
             <ul class="nav-links">
-                <li><a href="home.html">Inicio</a></li>
-                <li><a href="my-orders.html">Mis Pedidos</a></li>
-                <li id="adminLink" style="display: none;"><a href="admin.html">Administración</a></li>
+                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
+                <li><a href="./orders.html">Mis Pedidos</a></li>
+                <li id="adminLink" style="display: none;">
+                    <a href="/src/pages/admin/adminHome/adminHome.html">Administración</a>
+                </li>
                 <li class="cart-badge">
-                    <a href="cart.html">🛒 Carrito</a>
+                    <a href="/src/pages/store/cart/cart.html">🛒 Carrito</a>
                     <span class="badge-count" id="cartCount">0</span>
                 </li>
                 <li><span id="userName"></span></li>
@@ -27,20 +29,29 @@
     </nav>
 
     <div class="container">
-        <h1 class="mb-2">Mis Pedidos</h1>
+        <div class="page-header">
+            <h1>Mis Pedidos</h1>
+            <select id="statusFilter" class="btn btn-secondary">
+                <option value="all">Todos</option>
+                <option value="pending">Pendientes</option>
+                <option value="processing">En Preparación</option>
+                <option value="completed">Completados</option>
+                <option value="cancelled">Cancelados</option>
+            </select>
+        </div>
 
         <div id="ordersContainer" class="my-orders-container"></div>
 
-        <div id="emptyOrders" class="empty-state">
+        <div id="emptyOrders" class="empty-state" style="display: none;">
             <h2>No tienes pedidos aún</h2>
             <p>Realiza tu primer pedido y aparecerá aquí</p>
-            <a href="home.html" class="btn btn-primary">Ver Productos</a>
+            <a href="/src/pages/store/home/home.html" class="btn btn-primary">Ver Productos</a>
         </div>
     </div>
 
     <!-- Modal de Detalle de Pedido -->
     <div id="orderModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
                 <h2>Detalle del Pedido #<span id="orderId"></span></h2>
                 <button class="modal-close" id="closeModal">&times;</button>

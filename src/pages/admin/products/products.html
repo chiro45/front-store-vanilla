@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Gestión de Productos - Food Store</title>
     <link rel="stylesheet" href="/src/style.css">
 </head>
 
@@ -13,37 +13,86 @@
         <div class="nav-container">
             <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
             <ul class="nav-links">
-                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
-                <li><a href="/src/pages/admin//adminHome/adminHome.html">Administración</a></li>
+                <li><a href="/src/pages/store/home/home.html">Tienda</a></li>
+                <li><a href="/src/pages/admin/adminHome/adminHome.html">Panel Admin</a></li>
                 <li><span id="userName"></span></li>
                 <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h1>Gestión de Productos</h1>
-            <button class="btn btn-success" id="addBtn">+ Nuevo Producto</button>
-        </div>
+    <div class="main-layout">
+        <!-- Sidebar Admin -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Administración</h3>
+                <p style="font-size: 0.9rem; color: #636e72;">Panel de control</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/src/pages/admin/adminHome/adminHome.html">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/src/pages/admin/categories/categories.html">
+                        <span class="icon">📁</span>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./products.html" class="active">
+                        <span class="icon">🍔</span>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/src/pages/admin/orders/orders.html">
+                        <span class="icon">📦</span>
+                        <span>Pedidos</span>
+                    </a>
+                </li>
+                <li style="border-top: 1px solid var(--gray); margin-top: 1rem; padding-top: 1rem;">
+                    <a href="/src/pages/store/home/home.html">
+                        <span class="icon">🏪</span>
+                        <span>Ver Tienda</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Categoría</th>
-                        <th>Disponible</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTable"></tbody>
-            </table>
-        </div>
+        <!-- Botón toggle para mobile -->
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+        <!-- Contenido principal -->
+        <main class="main-content" id="mainContent">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Gestión de Productos</h1>
+                    <button class="btn btn-success" id="addBtn">+ Nuevo Producto</button>
+                </div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
     <!-- Modal -->
@@ -65,7 +114,11 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Precio</label>
-                    <input type="number" id="price" step="0.01" required>
+                    <input type="number" id="price" step="0.01" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" required min="0">
                 </div>
                 <div class="form-group">
                     <label for="categoryId">Categoría</label>
@@ -73,18 +126,20 @@
                 </div>
                 <div class="form-group">
                     <label for="image">URL de Imagen</label>
-                    <input type="url" id="image" required>
+                    <input type="url" id="image" required placeholder="https://ejemplo.com/imagen.jpg">
                 </div>
                 <div class="form-group">
-                    <label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
                         <input type="checkbox" id="available">
-                        Disponible
+                        <span>Producto disponible</span>
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar</button>
             </form>
         </div>
-        <script type="module" src="./products.ts"></script>
+    </div>
+
+    <script type="module" src="./products.ts"></script>
 </body>
 
 </html>

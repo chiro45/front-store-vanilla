@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Food Store</title>
+    <title>Panel de Administración - Food Store</title>
     <link rel="stylesheet" href="/src/style.css">
 </head>
 
@@ -13,40 +13,113 @@
         <div class="nav-container">
             <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
             <ul class="nav-links">
-                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
-                <li><a href="./adminHome.html">Administración</a></li>
+                <li><a href="/src/pages/store/home/home.html">Tienda</a></li>
+                <li><a href="./adminHome.html">Panel Admin</a></li>
                 <li><span id="userName"></span></li>
                 <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <h1 class="mb-2">Panel de Administración</h1>
-
-        <div class="grid">
-            <div class="card">
-                <h2>📁 Categorías</h2>
-                <p>Gestiona las categorías de productos</p>
-                <a href="/src/pages/admin/categories/categories.html" class="btn btn-primary">Ir a Categorías</a>
+    <div class="main-layout">
+        <!-- Sidebar Admin -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Administración</h3>
+                <p style="font-size: 0.9rem; color: #636e72;">Panel de control</p>
             </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="./adminHome.html" class="active">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/src/pages/admin/categories/categories.html">
+                        <span class="icon">📁</span>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/src/pages/admin/products/products.html">
+                        <span class="icon">🍔</span>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/src/pages/admin/orders/orders.html">
+                        <span class="icon">📦</span>
+                        <span>Pedidos</span>
+                    </a>
+                </li>
+                <li style="border-top: 1px solid var(--gray); margin-top: 1rem; padding-top: 1rem;">
+                    <a href="/src/pages/store/home/home.html">
+                        <span class="icon">🏪</span>
+                        <span>Ver Tienda</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-            <div class="card">
-                <h2>🍔 Productos</h2>
-                <p>Gestiona el catálogo de productos</p>
-                <a href="/src/pages/admin/products/products.html" class="btn btn-primary">Ir a Productos</a>
-            </div>
+        <!-- Botón toggle para mobile -->
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
 
-            <div class="card">
-                <h2>📊 Estadísticas</h2>
-                <p id="stats">Cargando...</p>
+        <!-- Contenido principal -->
+        <main class="main-content" id="mainContent">
+            <div class="container">
+                <h1 class="mb-2">Panel de Administración</h1>
+
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="card"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h2 style="color: white;">📁 Categorías</h2>
+                        <p style="font-size: 2rem; margin: 1rem 0;" id="categoriesCount">0</p>
+                        <a href="/src/pages/admin/categories/categories.html" class="btn btn-secondary"
+                            style="background: white; color: #667eea;">
+                            Gestionar
+                        </a>
+                    </div>
+
+                    <div class="card"
+                        style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                        <h2 style="color: white;">🍔 Productos</h2>
+                        <p style="font-size: 2rem; margin: 1rem 0;" id="productsCount">0</p>
+                        <a href="/src/pages/admin/products/products.html" class="btn btn-secondary"
+                            style="background: white; color: #f5576c;">
+                            Gestionar
+                        </a>
+                    </div>
+
+                    <div class="card"
+                        style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                        <h2 style="color: white;">📦 Pedidos</h2>
+                        <p style="font-size: 2rem; margin: 1rem 0;" id="ordersCount">0</p>
+                        <a href="/src/pages/admin/orders/orders.html" class="btn btn-secondary"
+                            style="background: white; color: #4facfe;">
+                            Gestionar
+                        </a>
+                    </div>
+
+                    <div class="card"
+                        style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                        <h2 style="color: white;">✅ Disponibles</h2>
+                        <p style="font-size: 2rem; margin: 1rem 0;" id="availableCount">0</p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Productos activos</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <h2>📊 Resumen Rápido</h2>
+                    <div id="quickStats" style="margin-top: 1rem;">
+                        <p>Cargando estadísticas...</p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <script type="module" src="./adminHome.ts">
-
-    </script>
+    <script type="module" src="./adminHome.ts"></script>
 </body>
 
 </html>

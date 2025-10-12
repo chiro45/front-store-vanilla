@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle del Producto</title>
+    <title>Detalle del Producto - Food Store</title>
     <link rel="stylesheet" href="/src/style.css">
 </head>
 
@@ -12,11 +12,69 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
+            <ul class="nav-links">
+                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
+                <li><a href="/src/pages/client/orders/orders.html">Mis Pedidos</a></li>
+                <li id="adminLink" style="display: none;">
+                    <a href="/src/pages/admin/adminHome/adminHome.html">Administración</a>
+                </li>
+                <li class="cart-badge">
+                    <a href="/src/pages/store/cart/cart.html">🛒 Carrito</a>
+                    <span class="badge-count" id="cartCount">0</span>
+                </li>
+                <li><span id="userName"></span></li>
+                <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
         </div>
     </nav>
 
-    <div class="container" id="productDetailContainer">
-        <!-- Los datos se cargarán con JS -->
+    <div class="container">
+        <div id="loadingProduct" class="loading">Cargando producto...</div>
+
+        <div id="productContent" style="display: none;">
+            <div class="product-detail">
+                <div>
+                    <img id="productImage" class="product-detail-image" src="" alt="">
+                </div>
+                <div class="product-detail-info">
+                    <h1 id="productName"></h1>
+                    <div class="price" id="productPrice"></div>
+                    <span id="productStatus" class="badge"></span>
+
+                    <p class="description" id="productDescription"></p>
+
+                    <div class="form-group" style="max-width: 300px;">
+                        <label for="quantity">Cantidad:</label>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="btn btn-secondary" id="decreaseBtn" style="width: 50px;">-</button>
+                            <input type="number" id="quantity" value="1" min="1"
+                                style="width: 80px; text-align: center;" readonly>
+                            <button class="btn btn-secondary" id="increaseBtn" style="width: 50px;">+</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button class="btn btn-primary" id="addToCartBtn" style="flex: 1;">
+                            🛒 Agregar al Carrito
+                        </button>
+                        <button class="btn btn-secondary" id="backBtn">
+                            ← Volver
+                        </button>
+                    </div>
+
+                    <div id="successMessage" style="display: none; background: var(--success); color: white; 
+                                padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        ✓ Producto agregado al carrito
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorProduct" style="display: none;" class="card text-center">
+            <h2>Producto no encontrado</h2>
+            <p>El producto que buscas no existe o no está disponible.</p>
+            <a href="/src/pages/store/home/home.html" class="btn btn-primary">Volver al inicio</a>
+        </div>
     </div>
 
     <script type="module" src="./productDetail.ts"></script>

@@ -4,7 +4,6 @@ import type {
   ICreateCategory,
   IUpdateCategory,
 } from "../types/ICategoria";
-import type { IOrder } from "../types/IOrders";
 import type {
   ICreateProduct,
   IProduct,
@@ -21,7 +20,7 @@ export const loginUser = async (
     name: "Juan Pérez",
     email: "juan.perez@example.com",
     id: 1,
-    // role: "admin",
+    //role: "admin",
   };
 };
 
@@ -178,9 +177,7 @@ export const updateProduct = async (
       "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
-export const createOrder = async (orderData: any): Promise<void> => {
-  console.log(orderData);
-};
+
 export const clearCart = async (): Promise<void> => {};
 export const deleteProduct = async (id: number): Promise<void> => {
   console.log(id);
@@ -232,13 +229,54 @@ export const getCartItemCount = () => {
   return [];
 };
 
-export const getOrders = async (): Promise<IOrder[]> => {
-  return [];
+// Agregar estos imports al inicio del archivo api.ts
+import type { ICreateOrder } from "../types/IOrders";
+
+// Reemplazar las funciones relacionadas con órdenes:
+
+// Simular base de datos de órdenes en localStorage
+const ORDERS_KEY = "orders_db";
+
+const getOrdersFromStorage = (): any[] => {
+  const ordersStr = localStorage.getItem(ORDERS_KEY);
+  return ordersStr ? JSON.parse(ordersStr) : [];
+};
+
+const saveOrdersToStorage = (orders: any[]): void => {
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+};
+
+export const createOrder = async (orderData: ICreateOrder): Promise<void> => {
+  console.log("Creando orden:", orderData);
+
+  const orders = getOrdersFromStorage();
+
+  const newOrder = {
+    id: `ORD-${Date.now()}`,
+    ...orderData,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+  };
+
+  orders.push(newOrder);
+  saveOrdersToStorage(orders);
+
+  console.log("Orden creada:", newOrder);
+};
+
+export const getOrders = async (): Promise<any[]> => {
+  return getOrdersFromStorage();
 };
 
 export const updateOrderStatus = async (
-  currentOrderId: string,
+  orderId: string,
   newStatus: string
 ): Promise<void> => {
-  console.log(currentOrderId, newStatus);
+  const orders = getOrdersFromStorage();
+  const orderIndex = orders.findIndex((o) => o.id === orderId);
+
+  if (orderIndex > -1) {
+    orders[orderIndex].status = newStatus;
+    saveOrdersToStorage(orders);
+  }
 };

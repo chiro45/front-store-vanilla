@@ -9,6 +9,7 @@ export default defineConfig({
         login: resolve(__dirname, "src/pages/auth/login/login.html"),
         register: resolve(__dirname, "src/pages/auth/resgister/resgister.html"),
         home: resolve(__dirname, "src/pages/store/home/home.html"),
+        cart: resolve(__dirname, "src/pages/store/cart/cart.html"),
         productDetail: resolve(
           __dirname,
           "src/pages/store/productDetail/productDetail.html"
