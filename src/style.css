@@ -15,7 +15,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: var(--light);
   color: var(--dark);
   line-height: 1.6;
@@ -565,4 +565,96 @@ body {
   .cart-item {
     flex-direction: column;
   }
+}
+
+/* Layout principal */
+.main-container {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 1rem;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: all 0.2s;
+}
+
+.category-item.active,
+.category-item:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Productos */
+.products-container {
+  flex: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4 minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.grid-item {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, border 0.2s;
+  cursor: pointer;
+}
+
+.grid-item:hover {
+  transform: scale(1.03);
+}
+
+.grid-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.grid-item-content {
+  padding: 1rem;
+}
+
+.price {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  border-radius: 8px;
+  font-size: 0.8em;
+  color: white;
+}
+
+.badge-success {
+  background-color: #28a745;
+}
+
+.badge-danger {
+  background-color: #dc3545;
 }

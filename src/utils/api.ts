@@ -42,7 +42,8 @@ export const getCategories = async (): Promise<ICategory[]> => {
       nombre: "Electrónica",
       descripcion: "Productos y dispositivos tecnológicos",
       activo: true,
-      image: "",
+      image:
+        "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
     },
   ];
 };
@@ -56,7 +57,8 @@ export const getCategoryById = async (
     nombre: "Electrónica",
     descripcion: "Productos y dispositivos tecnológicos",
     activo: true,
-    image: "",
+    image:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 
@@ -69,7 +71,8 @@ export const createCategory = async (
     nombre: "Electrónica",
     descripcion: "Productos y dispositivos tecnológicos",
     activo: true,
-    image: "",
+    image:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 export const updateCategory = async (
@@ -82,7 +85,8 @@ export const updateCategory = async (
     nombre: "Electrónica",
     descripcion: "Productos y dispositivos tecnológicos",
     activo: true,
-    image: "",
+    image:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 
@@ -101,7 +105,8 @@ export const getProducts = async (): Promise<IProduct[]> => {
       stock: 30,
       categoriaId: 1,
       activo: true,
-      imagen: "",
+      imagen:
+        "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
     },
   ];
 };
@@ -116,7 +121,8 @@ export const getProductById = async (id: string): Promise<IProduct> => {
     stock: 30,
     categoriaId: 1,
     activo: true,
-    imagen: "",
+    imagen:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 
@@ -133,7 +139,8 @@ export const getProductsByCategory = async (
       stock: 30,
       categoriaId: 1,
       activo: true,
-      imagen: "",
+      imagen:
+        "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
     },
   ];
 };
@@ -149,7 +156,8 @@ export const createProduct = async (
     stock: 30,
     categoriaId: 1,
     activo: true,
-    imagen: "",
+    imagen:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 
@@ -166,7 +174,8 @@ export const updateProduct = async (
     stock: 30,
     categoriaId: 1,
     activo: true,
-    imagen: "",
+    imagen:
+      "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
   };
 };
 export const createOrder = async (orderData: any): Promise<void> => {
@@ -199,7 +208,8 @@ export const getCart = (): ICart => {
         stock: 10,
         categoriaId: 3,
         activo: true,
-        imagen: "auriculares.jpg",
+        imagen:
+          "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
         cantidad: 2,
       },
       {
@@ -210,7 +220,8 @@ export const getCart = (): ICart => {
         stock: 8,
         categoriaId: 3,
         activo: true,
-        imagen: "mouse.jpg",
+        imagen:
+          "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
         cantidad: 1,
       },
     ],
