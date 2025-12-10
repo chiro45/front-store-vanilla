@@ -2,6 +2,7 @@ export interface IOrderItem {
   name: string;
   price: number;
   quantity: number;
+  productId?: number; // ID del producto para el backend
 }
 export type StatusOrder = "pending" | "processing" | "completed" | "cancelled";
 export interface IOrder {

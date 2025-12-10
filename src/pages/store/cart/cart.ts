@@ -181,6 +181,7 @@ const handleCheckout = async (e: Event): Promise<void> => {
       name: item.nombre,
       price: item.precio,
       quantity: item.cantidad,
+      productId: item.id, // ID del producto para el backend
     })),
     subtotal,
     shipping,
