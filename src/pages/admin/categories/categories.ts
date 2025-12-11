@@ -21,10 +21,18 @@ const loadCategories = async (): Promise<void> => {
           <tr>
             <td>${cat.id}</td>
             <td>${cat.nombre}</td>
-            <td>${cat.descipcion || "-"}</td>
+            <td>${
+              cat.descripcion.length > 20
+               ? `${cat.descripcion.slice(0,20)}...`
+                : cat.descripcion || "-"
+            }</td>
             <td>
-              <button class="btn btn-secondary" data-id="${cat.id}" data-action="edit">Editar</button>
-              <button class="btn btn-danger" data-id="${cat.id}" data-action="delete">Eliminar</button>
+              <button class="btn btn-secondary" data-id="${
+                cat.id
+              }" data-action="edit">Editar</button>
+              <button class="btn btn-danger" data-id="${
+                cat.id
+              }" data-action="delete">Eliminar</button>
             </td>
           </tr>
         `
@@ -73,7 +81,7 @@ const loadCategoryData = async (id: number): Promise<void> => {
       (document.getElementById("name") as HTMLInputElement).value =
         category.nombre;
       (document.getElementById("description") as HTMLInputElement).value =
-        category.descipcion || "";
+        category.descripcion || "";
     }
   } catch (error) {
     console.error("Error:", error);
@@ -92,7 +100,7 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
   const nombre = (
     document.getElementById("name") as HTMLInputElement
   ).value.trim();
-  const descipcion = (
+  const descripcion = (
     document.getElementById("description") as HTMLInputElement
   ).value.trim();
 
@@ -103,10 +111,10 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
 
   try {
     if (currentEditId) {
-      await updateCategory(currentEditId, nombre, descipcion);
+      await updateCategory(currentEditId, nombre, descripcion);
       alert("Categoría actualizada");
     } else {
-      await createCategory(nombre, descipcion);
+      await createCategory(nombre, descripcion);
       alert("Categoría creada");
     }
 
@@ -132,8 +140,9 @@ const removeCategory = async (id: number): Promise<void> => {
 };
 const initPage = (): void => {
   const user = getStoredUser();
-  (document.getElementById("userName") as HTMLLIElement).textContent =
-    `${user!.nombre} ${user!.apellido}`;
+  (document.getElementById("userName") as HTMLLIElement).textContent = `${
+    user!.nombre
+  } ${user!.apellido}`;
 
   (document.getElementById("logoutBtn") as HTMLButtonElement).addEventListener(
     "click",

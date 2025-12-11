@@ -135,21 +135,6 @@ El sistema maneja los siguientes estados:
 
 ---
 
-## ⚠️ Limitaciones Conocidas
-
-### Backend
-1. **No existe endpoint `/auth/login`**
-   - El login actualmente solo verifica que el email exista
-   - No valida la contraseña
-   - **Solución:** Implementar `POST /auth/login` en el backend
-
-2. **Typo en campo `descripcion`**
-   - El backend tiene un typo: `descipcion` en lugar de `descripcion`
-   - El frontend lo maneja correctamente
-
-3. **No hay endpoint para cambio de contraseña**
-   - La UI está implementada pero requiere `PUT /usuario/{id}/password` en el backend
-
 ### Frontend
 - El carrito se guarda en `localStorage` (se pierde al limpiar navegador)
 - No hay paginación en listados grandes

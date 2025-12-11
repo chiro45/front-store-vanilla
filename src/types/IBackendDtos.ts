@@ -27,7 +27,7 @@ export interface LoginRequest {
 export interface CategoriaDto {
   id: number;
   nombre: string;
-  descipcion: string; // Nota: typo en backend
+  descripcion: string; // Nota: typo en backend
 }
 
 export interface ProductoDto {
@@ -65,7 +65,7 @@ export interface ProductoEdit {
 export interface DetallePedidoDto {
   cantidad: number;
   subtotal: number;
-  productoDto: ProductoDto;
+  producto: ProductoDto;
 }
 
 export interface DetallePedidoCreate {

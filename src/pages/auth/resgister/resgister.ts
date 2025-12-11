@@ -8,6 +8,8 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const fullName = (document.getElementById("name") as HTMLInputElement).value.trim();
+  const lastName = (document.getElementById("lastName") as HTMLInputElement)
+    .value;
   const email = (document.getElementById("email") as HTMLInputElement).value.trim();
   const phone = (document.getElementById("phone") as HTMLInputElement).value.trim();
   const password = (document.getElementById("password") as HTMLInputElement).value;
@@ -26,11 +28,9 @@ form.addEventListener("submit", async (e) => {
   // Dividir el nombre completo en nombre y apellido
   const nameParts = fullName.split(" ");
   const nombre = nameParts[0];
-  const apellido = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-
   const userData = {
     nombre,
-    apellido,
+    apellido: lastName,
     mail: email,
     celular: phone || "",
     password,

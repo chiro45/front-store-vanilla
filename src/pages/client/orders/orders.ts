@@ -100,7 +100,7 @@ const renderOrders = (): void => {
                 .map(
                   (detalle) => `
                 <div style="font-size: 0.9rem; color: #636e72;">
-                  • ${detalle.productoDto.nombre} (x${detalle.cantidad})
+                  • ${detalle.producto.nombre} (x${detalle.cantidad})
                 </div>
               `
                 )
@@ -183,9 +183,7 @@ const getStatusIcon = (status: EstadoPedido): string => {
       <div style="font-size: 3rem; margin-bottom: 0.5rem;">
         ${getStatusIcon(order.estado)}
       </div>
-      <span class="status-badge status-${
-        order.estado.toLowerCase()
-      }" style="font-size: 1rem; padding: 0.7rem 1.5rem;">
+      <span class="status-badge status-${order.estado.toLowerCase()}" style="font-size: 1rem; padding: 0.7rem 1.5rem;">
         ${getStatusText(order.estado)}
       </span>
       <p style="margin-top: 1rem; color: #636e72; font-size: 0.95rem;">📅 ${formattedDate}</p>
@@ -206,12 +204,16 @@ const getStatusIcon = (status: EstadoPedido): string => {
           (detalle) => `
         <div class="order-item">
           <div>
-            <strong>${detalle.productoDto.nombre}</strong>
+            <strong>${detalle.producto.nombre}</strong>
             <p style="color: #636e72; font-size: 0.9rem; margin-top: 0.3rem;">
-              Cantidad: ${detalle.cantidad} × $${detalle.productoDto.precio.toFixed(2)}
+              Cantidad: ${
+                detalle.cantidad
+              } × $${detalle.producto.precio.toFixed(2)}
             </p>
           </div>
-          <span class="price" style="font-size: 1.2rem;">$${detalle.subtotal.toFixed(2)}</span>
+          <span class="price" style="font-size: 1.2rem;">$${detalle.subtotal.toFixed(
+            2
+          )}</span>
         </div>
       `
         )

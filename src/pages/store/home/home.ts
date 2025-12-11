@@ -40,7 +40,7 @@ const renderCategoryMenu = (): void => {
       (cat) => `
       <li>
         <a href="#" data-category="${cat.id}" class="category-link">
-          <span class="icon">📁</span>
+          <span class="icon">-</span>
           <span>${cat.nombre}</span>
         </a>
       </li>

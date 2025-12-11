@@ -136,8 +136,8 @@ const getStatusText = (status: EstadoPedido): string => {
           (detalle) => `
           <div class="order-item">
             <div>
-              <strong>${detalle.productoDto.nombre}</strong>
-              <p>Cantidad: ${detalle.cantidad} × $${detalle.productoDto.precio}</p>
+              <strong>${detalle.producto.nombre}</strong>
+              <p>Cantidad: ${detalle.cantidad} × $${detalle.producto.precio}</p>
             </div>
             <span class="price">$${detalle.subtotal.toFixed(2)}</span>
           </div>`
