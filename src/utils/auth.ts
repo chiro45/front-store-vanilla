@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import type { UsuarioDto } from "../types/IBackendDtos";
 
 export const getStoredUser = (): UsuarioDto | null => {
@@ -38,7 +39,7 @@ export const requireAdmin = (callback: () => void): void => {
       // Mostrar notificación no bloqueante y redirigir
       // Importar SweetAlert2 en tiempo de bundle es seguro aquí
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const Swal = require("sweetalert2").default;
+      
       Swal.fire({
         toast: true,
         position: "top-end",
