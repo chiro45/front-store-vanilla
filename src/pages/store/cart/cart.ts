@@ -1,5 +1,6 @@
 import type { ICart } from "../../../types/ICart";
 import { createOrder } from "../../../utils/api";
+import Swal from "sweetalert2";
 import {
   getStoredUser,
   isAdmin,
@@ -100,15 +101,28 @@ const handleQuantityChange = (productId: number, delta: number): void => {
   } else if (newQuantity <= 0) {
     handleRemoveItem(productId);
   } else {
-    alert(`Stock máximo disponible: ${item.stock}`);
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: `Stock máximo disponible: ${item.stock}`,
+      showConfirmButton: false,
+      timer: 2500,
+    });
   }
 };
 
 const handleRemoveItem = (productId: number): void => {
-  if (confirm("¿Deseas eliminar este producto del carrito?")) {
-    removeFromCart(productId);
-    renderCart();
-  }
+  removeFromCart(productId);
+  renderCart();
+  Swal.fire({
+    toast: true,
+    position: "top-end",
+    icon: "info",
+    title: "Producto eliminado",
+    showConfirmButton: false,
+    timer: 2000,
+  });
 };
 
 const updateSummary = (): void => {
@@ -128,10 +142,16 @@ const updateSummary = (): void => {
 };
 
 const handleClearCart = (): void => {
-  if (confirm("¿Estás seguro de vaciar todo el carrito?")) {
-    clearCartUtil();
-    renderCart();
-  }
+  clearCartUtil();
+  renderCart();
+  Swal.fire({
+    toast: true,
+    position: "top-end",
+    icon: "info",
+    title: "Carrito vaciado",
+    showConfirmButton: false,
+    timer: 2000,
+  });
 };
 
 const openCheckoutModal = (): void => {
@@ -149,7 +169,14 @@ const handleCheckout = async (e: Event): Promise<void> => {
 
   const user = getStoredUser();
   if (!user) {
-    alert("Debes iniciar sesión para realizar un pedido");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "info",
+      title: "Debes iniciar sesión para realizar un pedido",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
@@ -158,7 +185,14 @@ const handleCheckout = async (e: Event): Promise<void> => {
   ).value as "cash" | "card" | "transfer";
 
   if (!paymentMethod) {
-    alert("Por favor completa todos los campos requeridos");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "Por favor completa todos los campos requeridos",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
@@ -171,8 +205,14 @@ const handleCheckout = async (e: Event): Promise<void> => {
       }))
     );
     clearCartUtil();
-
-    alert("¡Pedido realizado con éxito! Recibirás una confirmación pronto.");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "¡Pedido realizado con éxito! Recibirás una confirmación pronto.",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     closeCheckoutModal();
 
     // Redirigir a la página de inicio después de un momento
@@ -181,7 +221,15 @@ const handleCheckout = async (e: Event): Promise<void> => {
     }, 1500);
   } catch (error) {
     console.error("Error al crear pedido:", error);
-    alert("Hubo un error al procesar tu pedido. Por favor intenta nuevamente.");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title:
+        "Hubo un error al procesar tu pedido. Por favor intenta nuevamente.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 
@@ -195,7 +243,8 @@ const initPage = (): void => {
   const checkoutForm = document.getElementById("checkoutForm");
   const modal = document.getElementById("checkoutModal");
 
-  if (user && userNameEl) userNameEl.textContent = `${user.nombre} ${user.apellido}`;
+  if (user && userNameEl)
+    userNameEl.textContent = `${user.nombre} ${user.apellido}`;
 
   if (isAdmin()) {
     const adminLink = document.getElementById("adminLink");

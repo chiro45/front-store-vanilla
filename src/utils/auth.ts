@@ -35,7 +35,18 @@ export const requireAuth = (callback: () => void): void => {
 export const requireAdmin = (callback: () => void): void => {
   requireAuth(() => {
     if (!isAdmin()) {
-      alert("Acceso denegado. Solo administradores.");
+      // Mostrar notificación no bloqueante y redirigir
+      // Importar SweetAlert2 en tiempo de bundle es seguro aquí
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const Swal = require("sweetalert2").default;
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Acceso denegado. Solo administradores.",
+        showConfirmButton: false,
+        timer: 2500,
+      });
       window.location.href = "/src/pages/home.html";
       return;
     }

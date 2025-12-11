@@ -6,6 +6,7 @@ import {
   getProducts,
   updateProduct,
 } from "../../../utils/api";
+import Swal from "sweetalert2";
 import { getStoredUser, logout, requireAdmin } from "../../../utils/auth";
 
 let currentEditId: number | null = null;
@@ -13,7 +14,9 @@ let categories: CategoriaDto[] = [];
 
 const initPage = async (): Promise<void> => {
   const user = getStoredUser();
-  (document.getElementById("userName") as HTMLElement).textContent = `${user!.nombre} ${user!.apellido}`;
+  (document.getElementById("userName") as HTMLElement).textContent = `${
+    user!.nombre
+  } ${user!.apellido}`;
 
   (document.getElementById("logoutBtn") as HTMLButtonElement).addEventListener(
     "click",
@@ -186,37 +189,93 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     .checked;
 
   if (!nombre || isNaN(precio) || !categoriaId) {
-    alert("Faltan datos obligatorios.");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "Faltan datos obligatorios",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
   try {
     if (currentEditId) {
-      await updateProduct(currentEditId, nombre, precio, descripcion, stock, imagen, activo, categoriaId);
-      alert("Producto actualizado correctamente");
+      await updateProduct(
+        currentEditId,
+        nombre,
+        precio,
+        descripcion,
+        stock,
+        imagen,
+        activo,
+        categoriaId
+      );
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Producto actualizado correctamente",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     } else {
-      await createProduct(nombre, precio, descripcion, stock, imagen, categoriaId);
-      alert("Producto creado correctamente");
+      await createProduct(
+        nombre,
+        precio,
+        descripcion,
+        stock,
+        imagen,
+        categoriaId
+      );
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Producto creado correctamente",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
 
     closeModal();
     loadProducts();
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al guardar el producto");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al guardar el producto",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 
 const removeProduct = async (id: number): Promise<void> => {
-  if (!confirm("¿Estás seguro de eliminar este producto?")) return;
-
   try {
     await deleteProduct(id);
-    alert("Producto eliminado correctamente");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "Producto eliminado correctamente",
+      showConfirmButton: false,
+      timer: 2000,
+    });
     loadProducts();
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al eliminar el producto");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al eliminar el producto",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 

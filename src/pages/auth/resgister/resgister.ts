@@ -1,27 +1,49 @@
 import { registerUser } from "../../../utils/api";
 import { setStoredUser } from "../../../utils/auth";
 import { navigate } from "../../../utils/navigate";
+import Swal from "sweetalert2";
 
 const form = document.getElementById("registerForm") as HTMLFormElement;
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const fullName = (document.getElementById("name") as HTMLInputElement).value.trim();
+  const fullName = (
+    document.getElementById("name") as HTMLInputElement
+  ).value.trim();
   const lastName = (document.getElementById("lastName") as HTMLInputElement)
     .value;
-  const email = (document.getElementById("email") as HTMLInputElement).value.trim();
-  const phone = (document.getElementById("phone") as HTMLInputElement).value.trim();
-  const password = (document.getElementById("password") as HTMLInputElement).value;
+  const email = (
+    document.getElementById("email") as HTMLInputElement
+  ).value.trim();
+  const phone = (
+    document.getElementById("phone") as HTMLInputElement
+  ).value.trim();
+  const password = (document.getElementById("password") as HTMLInputElement)
+    .value;
 
   // Validaciones básicas
   if (!fullName || !email || !password) {
-    alert("Por favor completa todos los campos obligatorios");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "Por favor completa todos los campos obligatorios",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
   if (password.length < 6) {
-    alert("La contraseña debe tener al menos 6 caracteres");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "La contraseña debe tener al menos 6 caracteres",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
@@ -41,13 +63,34 @@ form.addEventListener("submit", async (e) => {
 
     if (newUser) {
       setStoredUser(newUser);
-      alert("¡Registro exitoso! Bienvenido a Food Store");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "¡Registro exitoso! Bienvenido a Food Store",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       navigate("/src/pages/store/home/home.html");
     } else {
-      alert("Error al registrarse. El email podría estar ya en uso.");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Error al registrarse. El email podría estar ya en uso.",
+        showConfirmButton: false,
+        timer: 3000,
+      });
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al registrarse. Verifica que el servidor esté corriendo.");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al registrarse. Verifica que el servidor esté corriendo.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 });

@@ -1,6 +1,7 @@
 import { loginUser } from "../../../utils/api";
 import { setStoredUser } from "../../../utils/auth";
 import { navigate } from "../../../utils/navigate";
+import Swal from "sweetalert2";
 
 const form = document.getElementById("loginForm")!;
 
@@ -18,10 +19,25 @@ form.addEventListener("submit", async (e) => {
       setStoredUser(user);
       navigate("/src/pages/store/home/home.html");
     } else {
-      alert("Credenciales inválidas");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Credenciales inválidas",
+        showConfirmButton: false,
+        timer: 2500,
+      });
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al iniciar sesión. Verifica que el servidor esté corriendo.");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title:
+        "Error al iniciar sesión. Verifica que el servidor esté corriendo.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 });

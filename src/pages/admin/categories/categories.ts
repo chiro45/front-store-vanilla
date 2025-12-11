@@ -5,6 +5,7 @@ import {
   updateCategory,
 } from "../../../utils/api";
 import { getStoredUser, requireAdmin, logout } from "../../../utils/auth";
+import Swal from "sweetalert2";
 
 let currentEditId: number | null = null;
 
@@ -23,7 +24,7 @@ const loadCategories = async (): Promise<void> => {
             <td>${cat.nombre}</td>
             <td>${
               cat.descripcion.length > 20
-               ? `${cat.descripcion.slice(0,20)}...`
+                ? `${cat.descripcion.slice(0, 20)}...`
                 : cat.descripcion || "-"
             }</td>
             <td>
@@ -105,37 +106,77 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
   ).value.trim();
 
   if (!nombre) {
-    alert("El nombre es obligatorio");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "El nombre es obligatorio",
+      showConfirmButton: false,
+      timer: 2500,
+    });
     return;
   }
 
   try {
     if (currentEditId) {
       await updateCategory(currentEditId, nombre, descripcion);
-      alert("Categoría actualizada");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Categoría actualizada",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     } else {
       await createCategory(nombre, descripcion);
-      alert("Categoría creada");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Categoría creada",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
 
     closeModal();
     loadCategories();
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al guardar la categoría");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al guardar la categoría",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 
 const removeCategory = async (id: number): Promise<void> => {
-  if (!confirm("¿Estás seguro de eliminar esta categoría?")) return;
-
   try {
     await deleteCategory(id);
-    alert("Categoría eliminada correctamente");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "Categoría eliminada correctamente",
+      showConfirmButton: false,
+      timer: 2000,
+    });
     loadCategories();
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al eliminar la categoría");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al eliminar la categoría",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 const initPage = (): void => {

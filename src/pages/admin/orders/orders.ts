@@ -1,6 +1,7 @@
 import type { PedidoDto, EstadoPedido } from "../../../types/IBackendDtos";
 import { getOrders, updateOrderStatus } from "../../../utils/api";
 import { getStoredUser, logout, requireAdmin } from "../../../utils/auth";
+import Swal from "sweetalert2";
 
 let allOrders: PedidoDto[] = [];
 let currentOrderId: number | null = null;
@@ -154,7 +155,9 @@ const getStatusText = (status: EstadoPedido): string => {
   modal.classList.add("active");
 };
 
-const getPaymentMethodText = (method: "TARJETA" | "TRANSFERENCIA" | "EFECTIVO"): string => {
+const getPaymentMethodText = (
+  method: "TARJETA" | "TRANSFERENCIA" | "EFECTIVO"
+): string => {
   const map: Record<string, string> = {
     TARJETA: "Tarjeta",
     TRANSFERENCIA: "Transferencia",
@@ -182,12 +185,26 @@ const handleUpdateStatus = async (): Promise<void> => {
     const order = allOrders.find((o) => o.id === currentOrderId);
     if (order) order.estado = newStatus;
 
-    alert("Estado actualizado correctamente");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "Estado actualizado correctamente",
+      showConfirmButton: false,
+      timer: 2000,
+    });
     closeModal();
     filterOrders();
   } catch (error) {
     console.error("Error al actualizar estado:", error);
-    alert("Error al actualizar el estado");
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Error al actualizar el estado",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   }
 };
 
@@ -200,7 +217,8 @@ const initPage = async (): Promise<void> => {
   const updateStatusBtn = document.getElementById("updateStatusBtn");
   const modal = document.getElementById("orderModal");
 
-  if (user && userNameEl) userNameEl.textContent = `${user.nombre} ${user.apellido}`;
+  if (user && userNameEl)
+    userNameEl.textContent = `${user.nombre} ${user.apellido}`;
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
   if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
   if (statusFilter)
