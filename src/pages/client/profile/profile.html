@@ -1,11 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mi Perfil - Food Store</title>
+    <link rel="stylesheet" href="/src/style.css">
 </head>
+
 <body>
-    
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/src/pages/store/home/home.html" class="nav-brand">🍕 Food Store</a>
+            <ul class="nav-links">
+                <li><a href="/src/pages/store/home/home.html">Inicio</a></li>
+                <li><a href="/src/pages/client/orders/orders.html">Mis Pedidos</a></li>
+                <li id="adminLink" style="display: none;">
+                    <a href="/src/pages/admin/adminHome/adminHome.html">Administración</a>
+                </li>
+                <li class="cart-badge">
+                    <a href="/src/pages/store/cart/cart.html">🛒 Carrito</a>
+                    <span class="badge-count" id="cartCount">0</span>
+                </li>
+                <li><span id="userName"></span></li>
+                <li><button class="btn btn-secondary" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 800px;">
+        <div class="page-header">
+            <h1>Mi Perfil</h1>
+            <span id="profileRole" class="badge"></span>
+        </div>
+
+        <!-- Información Personal -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">👤 Información Personal</h2>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="profileName">Nombre Completo</label>
+                    <input type="text" id="profileName" required placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="profileEmail">Email</label>
+                    <input type="email" id="profileEmail" disabled readonly
+                        style="background: var(--light); cursor: not-allowed;">
+                    <small style="color: #636e72; font-size: 0.85rem;">El email no puede ser modificado</small>
+                </div>
+                <div class="form-group">
+                    <label for="profilePhone">Teléfono</label>
+                    <input type="tel" id="profilePhone" placeholder="(Opcional)">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Actualizar Información
+                </button>
+            </form>
+        </div>
+
+        <!-- Cambiar Contraseña -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">🔒 Cambiar Contraseña</h2>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Contraseña Actual</label>
+                    <input type="password" id="currentPassword" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Nueva Contraseña</label>
+                    <input type="password" id="newPassword" required minlength="6" placeholder="Mínimo 6 caracteres"
+                        autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="confirmPassword" required minlength="6"
+                        placeholder="Repite la nueva contraseña" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    Cambiar Contraseña
+                </button>
+            </form>
+        </div>
+
+        <!-- Estadísticas (solo visual) -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">📊 Estadísticas</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div style="text-align: center; padding: 1.5rem; background: var(--light); border-radius: 10px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📦</div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary);" id="totalOrders">-</div>
+                    <div style="color: #636e72; font-size: 0.9rem;">Pedidos Realizados</div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--light); border-radius: 10px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);" id="totalSpent">-</div>
+                    <div style="color: #636e72; font-size: 0.9rem;">Total Gastado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">⚡ Acciones Rápidas</h2>
+            <div style="display: grid; gap: 1rem;">
+                <a href="/src/pages/client/orders/orders.html" class="btn btn-primary"
+                    style="text-decoration: none; text-align: center;">
+                    📋 Ver Mis Pedidos
+                </a>
+                <a href="/src/pages/store/home/home.html" class="btn btn-secondary"
+                    style="text-decoration: none; text-align: center;">
+                    🛍️ Continuar Comprando
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./profile.ts"></script>
 </body>
+
 </html>

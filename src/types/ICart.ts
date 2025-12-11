@@ -1,7 +1,7 @@
-import type { IProduct } from "./IProduct";
+import type { ProductoDto } from "./IBackendDtos";
 
 // Producto dentro del carrito (agrega cantidad)
-export interface ICartItem extends IProduct {
+export interface ICartItem extends ProductoDto {
   cantidad: number;
 }
 

@@ -1,11 +1,11 @@
-import type { IUser } from "../types/IUser";
+import type { UsuarioDto } from "../types/IBackendDtos";
 
-export const getStoredUser = (): IUser | null => {
+export const getStoredUser = (): UsuarioDto | null => {
   const userStr = localStorage.getItem("user");
   return userStr ? JSON.parse(userStr) : null;
 };
 
-export const setStoredUser = (user: IUser): void => {
+export const setStoredUser = (user: UsuarioDto): void => {
   localStorage.setItem("user", JSON.stringify(user));
 };
 
@@ -15,12 +15,12 @@ export const isAuthenticated = (): boolean => {
 
 export const isAdmin = (): boolean => {
   const user = getStoredUser();
-  return user?.role === "admin";
+  return user?.rol === "ADMIN";
 };
 
 export const isCliente = (): boolean => {
   const user = getStoredUser();
-  return user?.role === "cliente";
+  return user?.rol === "USUARIO";
 };
 
 // Higher order function for route protection
@@ -42,6 +42,7 @@ export const requireAdmin = (callback: () => void): void => {
     callback();
   });
 };
+
 export const clearStoredUser = (): void => {
   localStorage.removeItem("user");
 };

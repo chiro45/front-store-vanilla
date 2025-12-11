@@ -1,33 +1,14 @@
 import type { ICart } from "../types/ICart";
 import type {
-  ICategory,
-  ICreateCategory,
-  IUpdateCategory,
-} from "../types/ICategoria";
-import type {
-  ICreateProduct,
-  IProduct,
-  IUpdateProduct,
-} from "../types/IProduct";
-import type { IUser, IUserRegister } from "../types/IUser";
-import type { ICreateOrder } from "../types/IOrders";
-import type {
   CategoriaDto,
   ProductoDto,
   PedidoDto,
   PedidoCreate,
-  DetallePedidoCreate,
   UsuarioDto,
   UsuarioCreate,
+  EstadoPedido,
+  FormaPago,
 } from "../types/IBackendDtos";
-import {
-  mapCategoriaDtoToICategory,
-  mapProductoDtoToIProduct,
-  mapPedidoDtoToIOrder,
-  mapPaymentMethodToFormaPago,
-  mapEstadoFrontendToBackend,
-  mapUsuarioDtoToIUser,
-} from "./mappers";
 import { getStoredUser } from "./auth";
 
 // Configuración del backend
@@ -74,105 +55,98 @@ async function fetchAPI<T>(
   }
 }
 
-// Authentication API
-// NOTA: El backend no tiene un endpoint específico de login
-// Por ahora usaremos GET /usuario para buscar el usuario por email
+// ============ Authentication API ============
+
+// ⚠️ LIMITACIÓN DEL BACKEND: No existe endpoint /auth/login
+// El backend debería implementar un endpoint POST /auth/login que:
+// 1. Reciba { mail, password }
+// 2. Valide la contraseña con BCrypt
+// 3. Retorne el usuario autenticado o un error 401
+//
+// SOLUCIÓN TEMPORAL: Buscar usuario por email sin validar password
 export const loginUser = async (
-  email: string,
-  password: string
-): Promise<IUser | null> => {
+  mail: string,
+  _password: string
+): Promise<UsuarioDto | null> => {
   try {
     // Obtener todos los usuarios
     const usuarios = await fetchAPI<UsuarioDto[]>("/usuario");
 
-    // Buscar usuario por email
-    // IMPORTANTE: Esto no es seguro, solo para propósitos de desarrollo
-    // El backend debería tener un endpoint /auth/login dedicado
-    const usuario = usuarios.find((u) => u.mail === email);
+    // Buscar usuario por mail
+    const usuario = usuarios.find((u) => u.mail === mail);
 
     if (!usuario) {
       throw new Error("Usuario no encontrado");
     }
 
-    // Como el backend no devuelve la contraseña, no podemos validarla aquí
-    // Esto es una limitación del backend actual
-    return mapUsuarioDtoToIUser(usuario);
+    // ⚠️ ADVERTENCIA: No se valida la contraseña porque el backend:
+    // - No devuelve la contraseña en el DTO (correcto por seguridad)
+    // - No tiene endpoint de login que valide credenciales
+    // TODO: El backend debe implementar POST /auth/login
+    console.warn("⚠️ LOGIN SIN VALIDACIÓN DE CONTRASEÑA - Solo verificando que el usuario existe");
+
+    return usuario;
   } catch (error) {
     console.error("Error en login:", error);
     return null;
   }
 };
 
-export const registerUser = async (userData: IUser): Promise<IUser | null> => {
+export const registerUser = async (userData: UsuarioCreate): Promise<UsuarioDto | null> => {
   try {
-    // Separar nombre y apellido
-    const [nombre, ...apellidoParts] = userData.name.split(" ");
-    const apellido = apellidoParts.join(" ") || "";
-
-    const body: UsuarioCreate = {
-      nombre,
-      apellido,
-      mail: userData.email,
-      celular: userData.phone || "",
-      contraseña: userData.password || "",
-    };
-
     const usuario = await fetchAPI<UsuarioDto>("/usuario", {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify(userData),
     });
 
-    return mapUsuarioDtoToIUser(usuario);
+    return usuario;
   } catch (error) {
     console.error("Error en registro:", error);
     return null;
   }
 };
 
-// Categories API
-export const getCategories = async (): Promise<ICategory[]> => {
-  const categorias = await fetchAPI<CategoriaDto[]>("/categoria");
-  return categorias.map(mapCategoriaDtoToICategory);
+// ============ Categories API ============
+
+export const getCategories = async (): Promise<CategoriaDto[]> => {
+  return await fetchAPI<CategoriaDto[]>("/categoria");
 };
 
 export const getCategoryById = async (
   id: string
-): Promise<ICategory | null> => {
-  const categoria = await fetchAPI<CategoriaDto>(`/categoria/${id}`);
-  return mapCategoriaDtoToICategory(categoria);
+): Promise<CategoriaDto | null> => {
+  return await fetchAPI<CategoriaDto>(`/categoria/${id}`);
 };
 
 export const createCategory = async (
-  category: ICreateCategory
-): Promise<ICategory> => {
+  nombre: string,
+  descripcion: string
+): Promise<CategoriaDto> => {
   const body = {
-    nombre: category.nombre,
-    descripcion: category.descripcion || "",
+    nombre,
+    descripcion: descripcion || "",
   };
 
-  const categoria = await fetchAPI<CategoriaDto>("/categoria", {
+  return await fetchAPI<CategoriaDto>("/categoria", {
     method: "POST",
     body: JSON.stringify(body),
   });
-
-  return mapCategoriaDtoToICategory(categoria);
 };
 
 export const updateCategory = async (
   id: number | string,
-  category: IUpdateCategory
-): Promise<ICategory> => {
+  nombre: string,
+  descripcion: string
+): Promise<CategoriaDto> => {
   const body = {
-    nombre: category.nombre,
-    descripcion: category.descripcion,
+    nombre,
+    descripcion,
   };
 
-  const categoria = await fetchAPI<CategoriaDto>(`/categoria/${id}`, {
+  return await fetchAPI<CategoriaDto>(`/categoria/${id}`, {
     method: "PUT",
     body: JSON.stringify(body),
   });
-
-  return mapCategoriaDtoToICategory(categoria);
 };
 
 export const deleteCategory = async (id: number): Promise<void> => {
@@ -181,76 +155,81 @@ export const deleteCategory = async (id: number): Promise<void> => {
   });
 };
 
-// Products API
-export const getProducts = async (): Promise<IProduct[]> => {
-  const productos = await fetchAPI<ProductoDto[]>("/producto");
-  return productos.map((p, index) => mapProductoDtoToIProduct(p, index + 1));
+// ============ Products API ============
+
+export const getProducts = async (): Promise<ProductoDto[]> => {
+  return await fetchAPI<ProductoDto[]>("/producto");
 };
 
-export const getProductById = async (id: string): Promise<IProduct> => {
-  const producto = await fetchAPI<ProductoDto>(`/producto/${id}`);
-  return mapProductoDtoToIProduct(producto, Number(id));
+export const getProductById = async (id: string): Promise<ProductoDto> => {
+  return await fetchAPI<ProductoDto>(`/producto/${id}`);
 };
 
 export const getProductsByCategory = async (
   categoryId: string
-): Promise<IProduct[]> => {
-  const productos = await fetchAPI<ProductoDto[]>(
-    `/producto/findByCategoria/${categoryId}`
-  );
-  return productos.map((p, index) => mapProductoDtoToIProduct(p, index + 1));
+): Promise<ProductoDto[]> => {
+  return await fetchAPI<ProductoDto[]>(`/producto/categoria/${categoryId}`);
 };
 
 export const createProduct = async (
-  product: ICreateProduct
-): Promise<IProduct> => {
+  nombre: string,
+  precio: number,
+  descripcion: string,
+  stock: number,
+  imagen: string,
+  idCategoria: number
+): Promise<ProductoDto> => {
   const body = {
-    nombre: product.nombre,
-    precio: product.precio,
-    descripcion: product.descripcion || "",
-    stock: product.stock,
-    imagen: product.imagen,
+    nombre,
+    precio,
+    descripcion: descripcion || "",
+    stock,
+    imagen,
     disponible: true,
-    idCategoria: product.categoriaId,
+    idCategoria,
   };
 
-  const producto = await fetchAPI<ProductoDto>("/producto", {
+  return await fetchAPI<ProductoDto>("/producto", {
     method: "POST",
     body: JSON.stringify(body),
   });
-
-  return mapProductoDtoToIProduct(producto);
 };
 
 export const updateProduct = async (
   id: number,
-  product: IUpdateProduct
-): Promise<IProduct> => {
+  nombre: string,
+  precio: number,
+  descripcion: string,
+  stock: number,
+  imagen: string,
+  disponible: boolean,
+  idCategoria: number
+): Promise<ProductoDto> => {
   const body = {
-    nombre: product.nombre,
-    precio: product.precio,
-    descripcion: product.descripcion || "",
-    stock: product.stock,
-    imagen: product.imagen,
-    disponible: product.activo ?? true,
-    idCategoria: product.categoriaId,
+    nombre,
+    precio,
+    descripcion: descripcion || "",
+    stock,
+    imagen,
+    disponible,
+    idCategoria,
   };
 
-  const producto = await fetchAPI<ProductoDto>(`/producto/${id}`, {
+  return await fetchAPI<ProductoDto>(`/producto/${id}`, {
     method: "PUT",
     body: JSON.stringify(body),
   });
-
-  return mapProductoDtoToIProduct(producto, id);
 };
-
-export const clearCart = async (): Promise<void> => {};
 
 export const deleteProduct = async (id: number): Promise<void> => {
   await fetchAPI<void>(`/producto/${id}`, {
     method: "DELETE",
   });
 };
+
+// ============ Cart API (Temporal - Mock) ============
+
+export const clearCart = async (): Promise<void> => {};
 
 export const updateQuantity = (itemId: string, newQuantity: any) => {
   console.log(itemId, newQuantity);
@@ -260,61 +239,47 @@ export const removeFromCart = (itemId: string) => {
   console.log(itemId);
 };
 
-export const addToCart = (product: IProduct) => {
+export const addToCart = (product: ProductoDto) => {
   console.log(product);
 };
+
 export const getCart = (): ICart => {
   return {
-    items: [
-      {
-        id: 1,
-        nombre: "Auriculares Bluetooth",
-        descripcion: "Auriculares inalámbricos con cancelación de ruido",
-        precio: 25000,
-        stock: 10,
-        categoriaId: 3,
-        activo: true,
-        imagen:
-          "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
-        cantidad: 2,
-      },
-      {
-        id: 2,
-        nombre: "Mouse Gamer",
-        descripcion: "Mouse RGB de alta precisión",
-        precio: 15000,
-        stock: 8,
-        categoriaId: 3,
-        activo: true,
-        imagen:
-          "https://http2.mlstatic.com/D_NQ_NP_2X_852686-MLA82382440528_022025-F.webp",
-        cantidad: 1,
-      },
-    ],
-    total: 65000,
+    items: [],
+    total: 0,
   };
 };
+
 export const getCartItemCount = () => {
   return [];
 };
 
-// Orders API
-export const createOrder = async (orderData: ICreateOrder): Promise<void> => {
+// ============ Orders API ============
+
+// Helper para convertir FormaPago del frontend al backend
+function mapPaymentMethodToFormaPago(method: "cash" | "card" | "transfer"): FormaPago {
+  const methodMap: Record<string, FormaPago> = {
+    cash: "EFECTIVO",
+    card: "TARJETA",
+    transfer: "TRANSFERENCIA",
+  };
+  return methodMap[method];
+}
+
+export const createOrder = async (
+  paymentMethod: "cash" | "card" | "transfer",
+  items: Array<{ cantidad: number; idProducto: number }>
+): Promise<void> => {
   const user = getStoredUser();
 
   if (!user || !user.id) {
     throw new Error("Usuario no autenticado");
   }
 
-  const detallePedido: DetallePedidoCreate[] = orderData.items.map((item) => ({
-    cantidad: item.quantity,
-    idProducto: item.productId ?? 0,
-  }));
-
   const body: PedidoCreate = {
     estado: "PENDIENTE",
-    formaPago: mapPaymentMethodToFormaPago(orderData.paymentMethod),
-    detallePedido,
+    formaPago: mapPaymentMethodToFormaPago(paymentMethod),
+    detallePedido: items,
     idUsuario: user.id,
   };
 
@@ -324,21 +289,16 @@ export const createOrder = async (orderData: ICreateOrder): Promise<void> => {
   });
 };
 
-export const getOrders = async (): Promise<any[]> => {
-  const pedidos = await fetchAPI<PedidoDto[]>("/pedido");
-  return pedidos.map(mapPedidoDtoToIOrder);
+export const getOrders = async (): Promise<PedidoDto[]> => {
+  return await fetchAPI<PedidoDto[]>("/pedido");
 };
 
 export const updateOrderStatus = async (
-  orderId: string,
-  newStatus: string
+  orderId: number,
+  newStatus: EstadoPedido
 ): Promise<void> => {
-  const estadoBackend = mapEstadoFrontendToBackend(newStatus as any);
-
-  // Para actualizar el estado, necesitamos enviar el pedido completo
-  // Por ahora solo enviamos el estado
   const body: Partial<PedidoCreate> = {
-    estado: estadoBackend,
+    estado: newStatus,
   };
 
   await fetchAPI<PedidoDto>(`/pedido/${orderId}`, {

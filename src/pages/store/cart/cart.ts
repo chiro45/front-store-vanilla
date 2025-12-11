@@ -1,5 +1,4 @@
 import type { ICart } from "../../../types/ICart";
-import type { ICreateOrder } from "../../../types/IOrders";
 import { createOrder } from "../../../utils/api";
 import {
   getStoredUser,
@@ -154,42 +153,23 @@ const handleCheckout = async (e: Event): Promise<void> => {
     return;
   }
 
-  const phone = (document.getElementById("phone") as HTMLInputElement).value;
-  const address = (document.getElementById("address") as HTMLTextAreaElement)
-    .value;
   const paymentMethod = (
     document.getElementById("paymentMethod") as HTMLSelectElement
   ).value as "cash" | "card" | "transfer";
-  const notes = (document.getElementById("notes") as HTMLTextAreaElement).value;
 
-  if (!phone || !address || !paymentMethod) {
+  if (!paymentMethod) {
     alert("Por favor completa todos los campos requeridos");
     return;
   }
 
-  const subtotal = currentCart.total;
-  const shipping = SHIPPING_COST;
-  const total = subtotal + shipping;
-
-  const orderData: ICreateOrder = {
-    userName: user.name,
-    phone,
-    address,
-    paymentMethod,
-    notes: notes || undefined,
-    items: currentCart.items.map((item) => ({
-      name: item.nombre,
-      price: item.precio,
-      quantity: item.cantidad,
-      productId: item.id, // ID del producto para el backend
-    })),
-    subtotal,
-    shipping,
-    total,
-  };
-
   try {
-    await createOrder(orderData);
+    await createOrder(
+      paymentMethod,
+      currentCart.items.map((item) => ({
+        cantidad: item.cantidad,
+        idProducto: item.id!,
+      }))
+    );
     clearCartUtil();
 
     alert("¡Pedido realizado con éxito! Recibirás una confirmación pronto.");
@@ -215,7 +195,7 @@ const initPage = (): void => {
   const checkoutForm = document.getElementById("checkoutForm");
   const modal = document.getElementById("checkoutModal");
 
-  if (user && userNameEl) userNameEl.textContent = user.name;
+  if (user && userNameEl) userNameEl.textContent = `${user.nombre} ${user.apellido}`;
 
   if (isAdmin()) {
     const adminLink = document.getElementById("adminLink");

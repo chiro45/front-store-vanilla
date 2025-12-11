@@ -1,14 +1,14 @@
-import type { IOrder, IOrderItem } from "../../../types/IOrders";
+import type { PedidoDto, EstadoPedido } from "../../../types/IBackendDtos";
 import { getOrders, updateOrderStatus } from "../../../utils/api";
 import { getStoredUser, logout, requireAdmin } from "../../../utils/auth";
 
-let allOrders: IOrder[] = [];
-let currentOrderId: string | null = null;
+let allOrders: PedidoDto[] = [];
+let currentOrderId: number | null = null;
 
 const loadOrders = async (): Promise<void> => {
   try {
     allOrders = await getOrders();
-    allOrders.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
+    allOrders.sort((a, b) => +new Date(b.fecha) - +new Date(a.fecha));
     renderOrders(allOrders);
   } catch (error) {
     console.error("Error al cargar pedidos:", error);
@@ -25,11 +25,11 @@ const filterOrders = (): void => {
   if (!filter) return;
 
   const filtered =
-    filter === "all" ? allOrders : allOrders.filter((o) => o.status === filter);
+    filter === "all" ? allOrders : allOrders.filter((o) => o.estado === filter);
   renderOrders(filtered);
 };
 
-const renderOrders = (orders: IOrder[]): void => {
+const renderOrders = (orders: PedidoDto[]): void => {
   const container = document.getElementById("ordersContainer");
   if (!container) return;
 
@@ -43,29 +43,31 @@ const renderOrders = (orders: IOrder[]): void => {
 
   container.innerHTML = orders
     .map((order) => {
-      const date = new Date(order.createdAt);
+      const date = new Date(order.fecha);
       const formattedDate = date.toLocaleDateString("es-AR", {
         year: "numeric",
         month: "long",
         day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
       });
 
+      const userName = order.usuarioDto
+        ? `${order.usuarioDto.nombre} ${order.usuarioDto.apellido}`
+        : "Usuario";
+
       return `
-        <div class="card order-card" onclick="window.viewOrder('${order.id}')">
+        <div class="card order-card" onclick="window.viewOrder(${order.id})">
           <div class="order-header">
             <div>
               <h3>Pedido #${order.id}</h3>
-              <p>Cliente: ${order.userName}</p>
+              <p>Cliente: ${userName}</p>
               <p>${formattedDate}</p>
             </div>
-            <span class="status-badge status-${order.status}">
-              ${getStatusText(order.status)}
+            <span class="status-badge status-${order.estado.toLowerCase()}">
+              ${getStatusText(order.estado)}
             </span>
           </div>
           <div class="order-summary">
-            <span>${order.items.length} producto(s)</span>
+            <span>${order.detalles.length} producto(s)</span>
             <span class="price">$${order.total.toFixed(2)}</span>
           </div>
         </div>`;
@@ -73,17 +75,20 @@ const renderOrders = (orders: IOrder[]): void => {
     .join("");
 };
 
-const getStatusText = (status: IOrder["status"]): string => {
-  const map: Record<IOrder["status"], string> = {
-    pending: "Pendiente",
-    processing: "En Proceso",
-    completed: "Completado",
-    cancelled: "Cancelado",
+const getStatusText = (status: EstadoPedido): string => {
+  const map: Record<EstadoPedido, string> = {
+    PENDIENTE: "Pendiente",
+    CONFIRMADO: "Confirmado",
+    EN_PREPARACION: "En Preparación",
+    ENVIADO: "Enviado",
+    ENTREGADO: "Entregado",
+    TERMINADO: "Terminado",
+    CANCELADO: "Cancelado",
   };
   return map[status] ?? status;
 };
 
-(window as any).viewOrder = (orderId: string): void => {
+(window as any).viewOrder = (orderId: number): void => {
   const order = allOrders.find((o) => o.id === orderId);
   if (!order) return;
 
@@ -98,49 +103,48 @@ const getStatusText = (status: IOrder["status"]): string => {
 
   if (!orderDetailEl || !modal || !orderStatusEl || !orderIdEl) return;
 
-  orderIdEl.textContent = orderId;
-  orderStatusEl.value = order.status;
+  orderIdEl.textContent = String(orderId);
+  orderStatusEl.value = order.estado;
 
-  const date = new Date(order.createdAt);
+  const date = new Date(order.fecha);
   const formattedDate = date.toLocaleDateString("es-AR", {
     year: "numeric",
     month: "long",
     day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
   });
+
+  const userName = order.usuarioDto
+    ? `${order.usuarioDto.nombre} ${order.usuarioDto.apellido}`
+    : "Usuario";
+  const userPhone = order.usuarioDto?.celular || "N/A";
+  const userMail = order.usuarioDto?.mail || "N/A";
 
   orderDetailEl.innerHTML = `
     <div class="order-info">
-      <p><strong>Cliente:</strong> ${order.userName}</p>
+      <p><strong>Cliente:</strong> ${userName}</p>
       <p><strong>Fecha:</strong> ${formattedDate}</p>
-      <p><strong>Teléfono:</strong> ${order.phone}</p>
-      <p><strong>Dirección:</strong> ${order.address}</p>
+      <p><strong>Teléfono:</strong> ${userPhone}</p>
+      <p><strong>Email:</strong> ${userMail}</p>
       <p><strong>Método de pago:</strong> ${getPaymentMethodText(
-        order.paymentMethod
+        order.formaPago
       )}</p>
-      ${order.notes ? `<p><strong>Notas:</strong> ${order.notes}</p>` : ""}
     </div>
     <div class="order-items">
       <h3>Productos:</h3>
-      ${order.items
+      ${order.detalles
         .map(
-          (i: IOrderItem) => `
+          (detalle) => `
           <div class="order-item">
             <div>
-              <strong>${i.name}</strong>
-              <p>Cantidad: ${i.quantity} × $${i.price}</p>
+              <strong>${detalle.productoDto.nombre}</strong>
+              <p>Cantidad: ${detalle.cantidad} × $${detalle.productoDto.precio}</p>
             </div>
-            <span class="price">$${(i.price * i.quantity).toFixed(2)}</span>
+            <span class="price">$${detalle.subtotal.toFixed(2)}</span>
           </div>`
         )
         .join("")}
     </div>
     <div class="order-totals">
-      <div><span>Subtotal:</span><span>$${order.subtotal.toFixed(
-        2
-      )}</span></div>
-      <div><span>Envío:</span><span>$${order.shipping.toFixed(2)}</span></div>
       <div class="total"><span>Total:</span><span>$${order.total.toFixed(
         2
       )}</span></div>
@@ -150,11 +154,11 @@ const getStatusText = (status: IOrder["status"]): string => {
   modal.classList.add("active");
 };
 
-const getPaymentMethodText = (method: IOrder["paymentMethod"]): string => {
-  const map: Record<IOrder["paymentMethod"], string> = {
-    cash: "Efectivo",
-    card: "Tarjeta",
-    transfer: "Transferencia",
+const getPaymentMethodText = (method: "TARJETA" | "TRANSFERENCIA" | "EFECTIVO"): string => {
+  const map: Record<string, string> = {
+    TARJETA: "Tarjeta",
+    TRANSFERENCIA: "Transferencia",
+    EFECTIVO: "Efectivo",
   };
   return map[method] ?? method;
 };
@@ -170,13 +174,13 @@ const handleUpdateStatus = async (): Promise<void> => {
 
   const newStatus = (
     document.getElementById("orderStatus") as HTMLSelectElement
-  )?.value as IOrder["status"];
+  )?.value as EstadoPedido;
   if (!newStatus) return;
 
   try {
     await updateOrderStatus(currentOrderId, newStatus);
     const order = allOrders.find((o) => o.id === currentOrderId);
-    if (order) order.status = newStatus;
+    if (order) order.estado = newStatus;
 
     alert("Estado actualizado correctamente");
     closeModal();
@@ -196,7 +200,7 @@ const initPage = async (): Promise<void> => {
   const updateStatusBtn = document.getElementById("updateStatusBtn");
   const modal = document.getElementById("orderModal");
 
-  if (user && userNameEl) userNameEl.textContent = user.name;
+  if (user && userNameEl) userNameEl.textContent = `${user.nombre} ${user.apellido}`;
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
   if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
   if (statusFilter)

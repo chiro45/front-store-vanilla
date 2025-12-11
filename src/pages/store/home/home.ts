@@ -1,5 +1,4 @@
-import type { ICategory } from "../../../types/ICategoria";
-import type { IProduct } from "../../../types/IProduct";
+import type { CategoriaDto, ProductoDto } from "../../../types/IBackendDtos";
 import { getCategories, getProducts } from "../../../utils/api";
 import {
   getStoredUser,
@@ -9,9 +8,9 @@ import {
 } from "../../../utils/auth";
 import { getCartItemCount } from "../../../utils/cart";
 
-let allProducts: IProduct[] = [];
-let allCategories: ICategory[] = [];
-let filteredProducts: IProduct[] = [];
+let allProducts: ProductoDto[] = [];
+let allCategories: CategoriaDto[] = [];
+let filteredProducts: ProductoDto[] = [];
 let currentCategory: number | null = null;
 let searchQuery: string = "";
 let sortBy: string = "";
@@ -109,7 +108,7 @@ const loadProducts = async (): Promise<void> => {
 const filterAndRenderProducts = (): void => {
   filteredProducts = allProducts.filter((product) => {
     // Filtro por categoría
-    if (currentCategory !== null && product.categoriaId !== currentCategory) {
+    if (currentCategory !== null && product.categoria.id !== currentCategory) {
       return false;
     }
 
@@ -122,10 +121,10 @@ const filterAndRenderProducts = (): void => {
     }
 
     // Filtro por disponibilidad
-    if (availabilityFilter === "available" && !product.activo) {
+    if (availabilityFilter === "available" && !product.disponible) {
       return false;
     }
-    if (availabilityFilter === "unavailable" && product.activo) {
+    if (availabilityFilter === "unavailable" && product.disponible) {
       return false;
     }
 
@@ -175,27 +174,26 @@ const renderProducts = (): void => {
 
   grid.innerHTML = filteredProducts
     .map((prod) => {
-      const category = allCategories.find((c) => c.id === prod.categoriaId);
       return `
-        <div class="grid-item clickable" 
+        <div class="grid-item clickable"
              onclick="window.location.href='/src/pages/store/productDetail/productDetail.html?id=${
                prod.id
-             }'" 
+             }'"
              style="cursor: pointer;">
-          <img src="${prod.imagen || "https://via.placeholder.com/400"}" 
+          <img src="${prod.imagen || "https://via.placeholder.com/400"}"
                alt="${prod.nombre}">
           <div class="grid-item-content">
             <span class="badge" style="background: var(--light); color: var(--dark); margin-bottom: 0.5rem;">
-              ${category ? category.nombre : "Sin categoría"}
+              ${prod.categoria ? prod.categoria.nombre : "Sin categoría"}
             </span>
             <h3>${prod.nombre}</h3>
             <p>${prod.descripcion || "Sin descripción"}</p>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
               <div class="price">${prod.precio.toFixed(2)}</div>
               <span class="badge ${
-                prod.activo ? "badge-success" : "badge-danger"
+                prod.disponible ? "badge-success" : "badge-danger"
               }">
-                ${prod.activo ? "Disponible" : "No disponible"}
+                ${prod.disponible ? "Disponible" : "No disponible"}
               </span>
             </div>
           </div>
@@ -247,7 +245,7 @@ const initPage = async (): Promise<void> => {
   const sidebarToggle = document.getElementById("sidebarToggle");
 
   if (user && userNameEl) {
-    userNameEl.textContent = user.name;
+    userNameEl.textContent = `${user.nombre} ${user.apellido}`;
   }
 
   if (isAdmin()) {

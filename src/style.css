@@ -719,22 +719,37 @@ body {
   text-transform: uppercase;
 }
 
-.status-pending {
+.status-pendiente {
   background: #ffeaa7;
   color: #fdcb6e;
 }
 
-.status-processing {
+.status-confirmado {
+  background: #a8e6cf;
+  color: #00b894;
+}
+
+.status-en_preparacion {
   background: #a29bfe;
   color: #6c5ce7;
 }
 
-.status-completed {
+.status-enviado {
+  background: #74b9ff;
+  color: #0984e3;
+}
+
+.status-entregado {
+  background: #ffeaa7;
+  color: #fdcb6e;
+}
+
+.status-terminado {
   background: #55efc4;
   color: #00b894;
 }
 
-.status-cancelled {
+.status-cancelado {
   background: #fab1a0;
   color: #d63031;
 }

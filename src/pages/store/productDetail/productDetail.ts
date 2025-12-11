@@ -1,4 +1,4 @@
-import type { IProduct } from "../../../types/IProduct";
+import type { ProductoDto } from "../../../types/IBackendDtos";
 import { getProductById } from "../../../utils/api";
 import {
   getStoredUser,
@@ -8,7 +8,7 @@ import {
 } from "../../../utils/auth";
 import { addToCart, getCartItemCount } from "../../../utils/cart";
 
-let currentProduct: IProduct | null = null;
+let currentProduct: ProductoDto | null = null;
 
 const updateCartCount = (): void => {
   const count = getCartItemCount();
@@ -45,11 +45,12 @@ const loadProduct = async (): Promise<void> => {
   }
 };
 
-const renderProduct = (product: IProduct): void => {
+const renderProduct = (product: ProductoDto): void => {
   const loadingEl = document.getElementById("loadingProduct");
   const contentEl = document.getElementById("productContent");
   const imageEl = document.getElementById("productImage") as HTMLImageElement;
   const nameEl = document.getElementById("productName");
+  const categoryEl = document.getElementById("productCategory");
   const priceEl = document.getElementById("productPrice");
   const statusEl = document.getElementById("productStatus");
   const descriptionEl = document.getElementById("productDescription");
@@ -64,6 +65,9 @@ const renderProduct = (product: IProduct): void => {
   }
 
   if (nameEl) nameEl.textContent = product.nombre;
+  if (categoryEl) {
+    categoryEl.textContent = product.categoria ? product.categoria.nombre : "Sin categoría";
+  }
   if (priceEl) priceEl.textContent = `$${product.precio.toFixed(2)}`;
   if (descriptionEl) {
     descriptionEl.textContent =
@@ -71,10 +75,10 @@ const renderProduct = (product: IProduct): void => {
   }
 
   if (statusEl) {
-    if (product.activo && product.stock > 0) {
+    if (product.disponible && product.stock > 0) {
       statusEl.textContent = `Disponible (Stock: ${product.stock})`;
       statusEl.className = "badge badge-success";
-    } else if (!product.activo) {
+    } else if (!product.disponible) {
       statusEl.textContent = "No disponible";
       statusEl.className = "badge badge-danger";
     } else {
@@ -85,7 +89,7 @@ const renderProduct = (product: IProduct): void => {
 
   // Deshabilitar botón si no está disponible
   if (addToCartBtn) {
-    if (!product.activo || product.stock <= 0) {
+    if (!product.disponible || product.stock <= 0) {
       (addToCartBtn as HTMLButtonElement).disabled = true;
       addToCartBtn.textContent = "No disponible";
       addToCartBtn.style.opacity = "0.5";
@@ -147,7 +151,7 @@ const initPage = async (): Promise<void> => {
   const decreaseBtn = document.getElementById("decreaseBtn");
   const addToCartBtn = document.getElementById("addToCartBtn");
 
-  if (user && userNameEl) userNameEl.textContent = user.name;
+  if (user && userNameEl) userNameEl.textContent = `${user.nombre} ${user.apellido}`;
 
   if (isAdmin()) {
     const adminLink = document.getElementById("adminLink");

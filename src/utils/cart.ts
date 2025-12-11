@@ -1,5 +1,5 @@
 import type { ICart, ICartItem } from "../types/ICart";
-import type { IProduct } from "../types/IProduct";
+import type { ProductoDto } from "../types/IBackendDtos";
 
 const CART_KEY = "shopping_cart";
 
@@ -23,7 +23,7 @@ const calculateTotal = (items: ICartItem[]): number => {
 };
 
 // Agregar producto al carrito
-export const addToCart = (product: IProduct, quantity: number = 1): void => {
+export const addToCart = (product: ProductoDto, quantity: number = 1): void => {
   const cart = getCart();
 
   // Verificar si el producto ya está en el carrito

@@ -1,5 +1,4 @@
-import type { ICategory } from "../../../types/ICategoria";
-import type { IProduct } from "../../../types/IProduct";
+import type { CategoriaDto, ProductoDto } from "../../../types/IBackendDtos";
 import {
   createProduct,
   deleteProduct,
@@ -10,11 +9,11 @@ import {
 import { getStoredUser, logout, requireAdmin } from "../../../utils/auth";
 
 let currentEditId: number | null = null;
-let categories: ICategory[] = [];
+let categories: CategoriaDto[] = [];
 
 const initPage = async (): Promise<void> => {
   const user = getStoredUser();
-  (document.getElementById("userName") as HTMLElement).textContent = user!.name;
+  (document.getElementById("userName") as HTMLElement).textContent = `${user!.nombre} ${user!.apellido}`;
 
   (document.getElementById("logoutBtn") as HTMLButtonElement).addEventListener(
     "click",
@@ -50,28 +49,28 @@ const initPage = async (): Promise<void> => {
 
 const loadProducts = async (): Promise<void> => {
   try {
-    const products: IProduct[] = await getProducts();
+    const products: ProductoDto[] = await getProducts();
     const tbody = document.getElementById("productsTable") as HTMLElement;
 
     tbody.innerHTML = products
       .map((prod) => {
-        const category = categories.find((c) => c.id === prod.categoriaId);
         return `
           <tr>
             <td>${prod.id}</td>
             <td>
-              <img src="${prod.imagen}" alt="${prod.nombre}" 
+              <img src="${prod.imagen}" alt="${prod.nombre}"
                    style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
             </td>
             <td>${prod.nombre}</td>
             <td>${prod.descripcion ?? "-"}</td>
             <td>$${prod.precio.toFixed(2)}</td>
-            <td>${category ? category.nombre : "N/A"}</td>
+            <td>${prod.categoria ? prod.categoria.nombre : "N/A"}</td>
+            <td>${prod.stock}</td>
             <td>
               <span class="badge ${
-                prod.activo ? "badge-success" : "badge-danger"
+                prod.disponible ? "badge-success" : "badge-danger"
               }">
-                ${prod.activo ? "Sí" : "No"}
+                ${prod.disponible ? "Disponible" : "No disponible"}
               </span>
             </td>
             <td>
@@ -128,7 +127,7 @@ const openModal = (id: number | null = null): void => {
 
 const loadProductData = async (id: number): Promise<void> => {
   try {
-    const products: IProduct[] = await getProducts();
+    const products: ProductoDto[] = await getProducts();
     const product = products.find((p) => p.id === id);
 
     if (product) {
@@ -142,12 +141,15 @@ const loadProductData = async (id: number): Promise<void> => {
       (document.getElementById("price") as HTMLInputElement).value = String(
         product.precio
       );
+      (document.getElementById("stock") as HTMLInputElement).value = String(
+        product.stock
+      );
       (document.getElementById("categoryId") as HTMLSelectElement).value =
-        String(product.categoriaId);
+        String(product.categoria.id);
       (document.getElementById("image") as HTMLInputElement).value =
         product.imagen ?? "";
       (document.getElementById("available") as HTMLInputElement).checked =
-        product.activo;
+        product.disponible;
     }
   } catch (error) {
     console.error("Error:", error);
@@ -175,7 +177,7 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     (document.getElementById("categoryId") as HTMLSelectElement).value
   );
   const stock = Number(
-    (document.getElementById("categoryId") as HTMLSelectElement).value
+    (document.getElementById("stock") as HTMLInputElement).value
   );
   const imagen = (
     document.getElementById("image") as HTMLInputElement
@@ -188,22 +190,12 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     return;
   }
 
-  const productData = {
-    nombre,
-    descripcion,
-    precio,
-    categoriaId,
-    imagen,
-    activo,
-    stock,
-  };
-
   try {
     if (currentEditId) {
-      await updateProduct(currentEditId, { id: currentEditId, ...productData });
+      await updateProduct(currentEditId, nombre, precio, descripcion, stock, imagen, activo, categoriaId);
       alert("Producto actualizado correctamente");
     } else {
-      await createProduct(productData);
+      await createProduct(nombre, precio, descripcion, stock, imagen, categoriaId);
       alert("Producto creado correctamente");
     }
 

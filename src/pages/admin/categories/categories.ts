@@ -20,12 +20,8 @@ const loadCategories = async (): Promise<void> => {
         (cat: any) => `
           <tr>
             <td>${cat.id}</td>
-            <td>
-              <img src="${cat.image}" alt="${cat.nombre}" 
-                   style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
-            </td>
             <td>${cat.nombre}</td>
-            <td>${cat.descripcion}</td>
+            <td>${cat.descipcion || "-"}</td>
             <td>
               <button class="btn btn-secondary" data-id="${cat.id}" data-action="edit">Editar</button>
               <button class="btn btn-danger" data-id="${cat.id}" data-action="delete">Eliminar</button>
@@ -77,9 +73,7 @@ const loadCategoryData = async (id: number): Promise<void> => {
       (document.getElementById("name") as HTMLInputElement).value =
         category.nombre;
       (document.getElementById("description") as HTMLInputElement).value =
-        category.descripcion;
-      (document.getElementById("image") as HTMLInputElement).value =
-        category.image;
+        category.descipcion || "";
     }
   } catch (error) {
     console.error("Error:", error);
@@ -98,7 +92,7 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
   const nombre = (
     document.getElementById("name") as HTMLInputElement
   ).value.trim();
-  const descripcion = (
+  const descipcion = (
     document.getElementById("description") as HTMLInputElement
   ).value.trim();
 
@@ -107,17 +101,12 @@ const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     return;
   }
 
-  const categoryData = { nombre, descripcion };
-
   try {
     if (currentEditId) {
-      await updateCategory(currentEditId, {
-        id: currentEditId,
-        ...categoryData,
-      });
+      await updateCategory(currentEditId, nombre, descipcion);
       alert("Categoría actualizada");
     } else {
-      await createCategory(categoryData);
+      await createCategory(nombre, descipcion);
       alert("Categoría creada");
     }
 
@@ -144,7 +133,7 @@ const removeCategory = async (id: number): Promise<void> => {
 const initPage = (): void => {
   const user = getStoredUser();
   (document.getElementById("userName") as HTMLLIElement).textContent =
-    user!.name;
+    `${user!.nombre} ${user!.apellido}`;
 
   (document.getElementById("logoutBtn") as HTMLButtonElement).addEventListener(
     "click",

@@ -8,6 +8,7 @@ export interface UsuarioDto {
   mail: string;
   celular: string;
   rol: "ADMIN" | "USUARIO";
+  password?: string; // Solo para creación/edición local, nunca viene del backend
 }
 
 export interface UsuarioCreate {
@@ -15,7 +16,12 @@ export interface UsuarioCreate {
   apellido: string;
   mail: string;
   celular: string;
-  contraseña: string;
+  password: string;
+}
+
+export interface LoginRequest {
+  mail: string;
+  password: string;
 }
 
 export interface CategoriaDto {
@@ -25,7 +31,7 @@ export interface CategoriaDto {
 }
 
 export interface ProductoDto {
-  id?: number; // Algunos endpoints pueden incluir el id
+  id?: number;
   nombre: string;
   precio: number;
   descripcion?: string;
@@ -33,6 +39,7 @@ export interface ProductoDto {
   imagen: string;
   disponible: boolean;
   categoria: CategoriaDto;
+  idCategoria?: number; // Para crear/editar productos
 }
 
 export interface ProductoCreate {
@@ -66,7 +73,7 @@ export interface DetallePedidoCreate {
   idProducto: number;
 }
 
-export type EstadoPedido = "PENDIENTE" | "CONFIRMADO" | "TERMINADO" | "CANCELADO";
+export type EstadoPedido = "PENDIENTE" | "CONFIRMADO" | "EN_PREPARACION" | "ENVIADO" | "ENTREGADO" | "TERMINADO" | "CANCELADO";
 export type FormaPago = "TARJETA" | "TRANSFERENCIA" | "EFECTIVO";
 
 export interface PedidoDto {
@@ -76,6 +83,8 @@ export interface PedidoDto {
   total: number;
   formaPago: FormaPago;
   detalles: DetallePedidoDto[];
+  usuarioDto?: UsuarioDto; // Información del usuario que realizó el pedido
+  idUsuario?: number; // ID del usuario (en caso de que no venga usuarioDto completo)
 }
 
 export interface PedidoCreate {
